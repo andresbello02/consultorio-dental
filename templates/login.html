@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultorio Odontológico - Login</title>
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google reCAPTCHA API -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo-container">
+            <img src="../static/IMG/logoconsultorio.png" alt="logotipo" class="logo">
+            <h1>Consultorio Odontologico</h1>
+        </div>
+<nav>
+    <a href="/">Inicio</a>
+    <a href="/sobre_nosotros">Sobre Nosotros</a>
+    <a href="/citas">Citas</a>
+    <a href="/ubicacion">Ubicación</a>
+    <a href="/contactenos">Contáctenos</a>
+
+    {% if session.get('nombre') %}
+        <div class="user-info">
+            <span class="user-name">👤 {{ session['nombre'] }}</span>
+        </div>
+        <a href="/logout" class="btn-logout">Cerrar Sesión</a>
+    {% else %}
+        <a href="/login" class="btn-login">Entrar</a>
+        <a href="/register" class="btn-register">Registro</a>
+    {% endif %}
+</nav>
+    </header>
+
+    <div class="auth-container">
+        <div class="auth-box">
+            <h2>Iniciar Sesión</h2>
+            {% if error %}
+<div style="
+    background:#ffebee;
+    color:#c62828;
+    padding:12px;
+    border-radius:8px;
+    margin-bottom:15px;
+    text-align:center;
+    font-weight:bold;">
+    {{ error }}
+</div>
+{% endif %}
+
+
+            <form action="/login" method="POST">
+
+                <input type="email" name="email" placeholder="Correo electrónico" required>
+                
+                <input type="password" name="password" placeholder="Contraseña" required>
+                
+                <!-- Enlace de recuperación de contraseña -->
+                <div style="text-align: right; margin-bottom: 15px;">
+                    <a href="{{ url_for('recuperar') }}" style="color: #1E88E5; font-size: 0.9em; text-decoration: none;">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <!-- Google reCAPTCHA -->
+                <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" style="margin-bottom: 15px; display: flex; justify-content: center;"></div>
+
+                <button type="submit">Entrar</button>
+                <p>¿No tienes cuenta? <a href="/register">Regístrate</a></p>
+            </form>
+        </div>
+    </div>
+    <a href="https://www.instagram.com/invensibles_software" class="btn-instagram" target="_blank">
+        <i class="fab fa-instagram"></i>
+    </a>
+
+<div class="whatsapp-menu-container">
+    <div class="whatsapp-list" id="wa-list">
+        <div class="wa-header">Contactar con un asesor</div>
+        <a href="https://wa.me/573144760938" target="_blank" class="wa-item">
+            <i class="fab fa-whatsapp"></i> <span>Asesor 1</span>
+        </a>
+        <a href="https://wa.me/573104774044" target="_blank" class="wa-item">
+            <i class="fab fa-whatsapp"></i> <span>Asesor 2</span>
+        </a>
+        <a href="https://wa.me/573103592752" target="_blank" class="wa-item">
+            <i class="fab fa-whatsapp"></i> <span>Asesor 3</span>
+        </a>
+        <a href="https://wa.me/573108659353" target="_blank" class="wa-item">
+            <i class="fab fa-whatsapp"></i> <span>Asesor 4</span>
+        </a>
+    </div>
+
+    <button class="btn-wa-main" onclick="toggleWAMenu()">
+        <i class="fab fa-whatsapp"></i>
+    </button>
+</div>
+
+<script>
+function toggleWAMenu() {
+    const list = document.getElementById('wa-list');
+    list.classList.toggle('show-wa');
+}
+
+// Opcional: Cerrar el menú si haces clic fuera de él
+window.onclick = function(event) {
+    if (!event.target.closest('.whatsapp-menu-container')) {
+        const list = document.getElementById('wa-list');
+        if (list.classList.contains('show-wa')) {
+            list.classList.remove('show-wa');
+        }
+    }
+}
+</script>
+    </body>
+</html>

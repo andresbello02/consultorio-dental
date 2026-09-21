@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información Legal - Consultorio Odontológico</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+    <style>
+        .legal-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            font-family: sans-serif;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .legal-nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+        }
+        .legal-nav a {
+            text-decoration: none;
+            color: #64748b;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .legal-nav a.active {
+            background-color: #0284c7;
+            color: #ffffff;
+        }
+        .legal-content h1 {
+            color: #0f172a;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body style="background-color: #f8fafc;">
+
+    <div class="legal-container">
+        <div style="margin-bottom: 20px;">
+            <a href="/" style="color: #0284c7; text-decoration: none; font-weight: bold;">← Volver al Inicio</a>
+        </div>
+
+        <nav class="legal-nav">
+            <a href="/legales?tipo=privacidad" class="{% if tipo == 'privacidad' %}active{% endif %}">Privacidad</a>
+            <a href="/legales?tipo=terminos" class="{% if tipo == 'terminos' %}active{% endif %}">Términos</a>
+            <a href="/legales?tipo=devoluciones" class="{% if tipo == 'devoluciones' %}active{% endif %}">Devoluciones</a>
+            <a href="/legales?tipo=garantias" class="{% if tipo == 'garantias' %}active{% endif %}">Garantías</a>
+            <a href="/legales?tipo=cookies" class="{% if tipo == 'cookies' %}active{% endif %}">Cookies</a>
+            <a href="/legales?tipo=tratamiento_datos" class="{% if tipo == 'tratamiento_datos' %}active{% endif %}">Tratamiento de Datos</a>
+        </nav>
+
+        <div class="legal-content">
+            {% if tipo == 'privacidad' %}
+                <h1>Política de Privacidad</h1>
+                <p>En el Consultorio Odontológico garantizamos la protección y confidencialidad de la información personal de nuestros usuarios y pacientes.</p>
+            {% elif tipo == 'terminos' %}
+                <h1>Términos y Condiciones</h1>
+                <p>El acceso y uso de los servicios del Consultorio Odontológico están sujetos a los presentes términos y condiciones generales.</p>
+            {% elif tipo == 'devoluciones' %}
+                <h1>Política de Devoluciones</h1>
+                <p>Condiciones y procedimientos aplicables a reembolsos o cancelaciones de valoraciones y tratamientos contables en el consultorio.</p>
+            {% elif tipo == 'garantias' %}
+                <h1>Política de Garantías</h1>
+                <p>Ofrecemos garantía sobre la durabilidad y calidad de nuestros procedimientos odontológicos y materiales utilizados.</p>
+            {% elif tipo == 'cookies' %}
+                <h1>Política de Cookies</h1>
+                <p>Este sitio web utiliza cookies técnicas e analíticas para ofrecer la mejor experiencia de navegación posible al usuario.</p>
+            {% elif tipo == 'tratamiento_datos' %}
+                <h1>Tratamiento de Datos Personales</h1>
+                <p>De conformidad con la normativa vigente de protección de datos, sus datos personales serán tratados de forma segura para la gestión de citas y registros médicos.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>

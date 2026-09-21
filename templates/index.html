@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultorio Odontológico</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo-container">
+            <img src="static/IMG/logoconsultorio.png" alt="logotipo" class="logo">
+            <h1>Consultorio Odontológico</h1>
+        </div>
+        <nav id="menuPrincipal">
+            {% if session.get('rol') == 'admin' %}
+            <a href="{{ url_for('admin') }}" class="btn btn-warning">Panel Admin</a>
+            {% endif %}
+            <a href="/">Inicio</a>
+            <a href="/sobre_nosotros">Sobre Nosotros</a>
+            <a href="/citas">Citas</a>
+            <a href="/ubicacion">Ubicación</a>
+            <a href="/contactenos">Contáctenos</a>
+            
+            {% if session.get('nombre') %}
+                <div class="user-info">
+                    <span class="user-name">👤 {{ session['nombre'] }}</span>
+                </div>
+                <a href="/logout" class="btn-logout">Cerrar Sesión</a>
+            {% else %}
+                <a href="/login" class="btn-login">Entrar</a>
+                <a href="/register" class="btn-register">Registro</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    {% if session.get('nombre') %}
+    <div style="max-width: 1200px; margin: 20px auto; padding: 0 20px; font-family: sans-serif;">
+        {% if alerta_6m %}
+        <div style="background: #fff3cd; border-left: 6px solid #ffc107; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+            <div style="flex: 1;">
+                <h4 style="margin: 0; color: #856404; font-size: 1.2rem;">¡Hola, {{ session['nombre'] }}! 🦷</h4>
+                <p style="margin: 5px 0 0; color: #856404;">Ya han pasado 6 meses desde tu última visita. Es hora de tu limpieza semestral para mantener tu salud dental perfecta.</p>
+            </div>
+            <a href="/citas" style="background: #ffc107; color: #000; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-left: 20px; white-space: nowrap;">Agendar ahora</a>
+        </div>
+        {% endif %}
+
+        {% if proxima %}
+        <div style="background: #d4edda; border-left: 6px solid #28a745; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center;">
+            <span style="font-size: 24px; margin-right: 15px;">📅</span>
+            <p style="margin: 0; color: #155724;">Recordatorio: Tienes una cita programada para el <strong>{{ proxima['fecha'] }}</strong> a las <strong>{{ proxima['hora'] }}</strong>.</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-left">
+                <span class="hero-badge">🦷 Tecnología Dental Inteligente</span>
+                <h2>Diseñamos <span>Sonrisas Perfectas</span></h2>
+                <p>Vive una experiencia odontológica futurista con simulación visual de tratamientos, especialistas premium y tecnología avanzada.</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="document.getElementById('seccion-cita').scrollIntoView({behavior: 'smooth'})">
+                        Reservar Cita
+                    </button>
+                    <button class="btn-secondary">Ver Resultados</button>
+                    <button class="btn-ai" onclick="openAIAnalyzer()">
+                        🤖 Analizar Mi Sonrisa
+                    </button>
+                </div>
+            </div>
+            <div class="hero-right">
+                <div class="image-card">
+                    <img src="static/IMG/niñosonriendo.jpg" alt="Paciente">
+                </div>
+                <div class="floating-card top-card">✨ Diseño de sonrisa premium</div>
+                <div class="floating-card bottom-card">🦷 +95% satisfacción de pacientes</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="servicios">
+        <h2 class="titulo-seccion">Logra tu sonrisa perfecta</h2>
+        <div class="contenedor-cards">
+            <div class="card">
+                <div class="img-container"><img src="static/IMG/imagenortodoncia.jpg" alt="Ortodoncia"></div>
+                <h3>Ortodoncia</h3>
+                <p>Técnicas innovadoras para una alineación perfecta.</p>
+                <button class="btn-card" onclick="window.location.href='/citas'">PROGRAMA TU VALORACIÓN</button> 
+            </div>
+            <div class="card">
+                <div class="img-container"><img src="static/IMG/Diseñosonrisa.jpg" alt="Diseño"></div>
+                <h3>Diseño de sonrisa</h3>
+                <p>Arte y ciencia para sonrisas que cautivan.</p>
+                <button class="btn-card" onclick="window.location.href='/citas'">PROGRAMA TU VALORACIÓN</button>
+            </div>
+            <div class="card">
+                <div class="img-container"><img src="static/IMG/imagenimplantes.jpg" alt="Implantes"></div>
+                <h3>Implantes dentales</h3>
+                <p>Soluciones duraderas para una sonrisa completa.</p>
+                <button class="btn-card" onclick="window.location.href='/citas'">PROGRAMA TU VALORACIÓN</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="ai-section">
+        <div class="ai-title">
+            <span>TECNOLOGÍA SMILEVISION AI</span>
+            <h2>Visualiza Tu Nueva Sonrisa</h2>
+            <p>Observa cómo podrían verse tus dientes después de un tratamiento profesional de diseño de sonrisa.</p>
+        </div>
+        <div class="before-after-container">
+            <div class="before-after">
+                <img src="static/IMG/antes.jpg" class="img-before">
+                <div class="after-wrapper" id="afterWrapper">
+                    <img src="static/IMG/despues.jpg" class="img-after">
+                </div>
+                <input type="range" min="0" max="100" value="50" class="slider" id="slider">
+                <div class="slider-line"></div>
+                <div class="labels">
+                    <span class="before-label">ANTES</span>
+                    <span class="after-label">DESPUÉS</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="seccion-imagen-grande">
+        <img src="static/IMG/imagen2.jpg" class="imagen-grande" alt="Nuestro Consultorio">
+    </section>
+
+    <section class="formulario" id="seccion-cita">
+        <div class="formulario-contenido">
+            <div class="formulario-texto">
+                <h2>Contáctanos</h2>
+                <p>Agenda tu cita con nuestros especialistas. Estamos comprometidos con tu salud dental.</p>
+            </div>
+            <form id="formCita">
+                <div class="fila">
+                    <input type="text" id="nombre" placeholder="Nombre" required>
+                    <input type="text" id="apellido" placeholder="Apellido" required>
+                </div>
+                <input type="email" id="correo" placeholder="Correo electrónico" required>
+                <input type="tel" id="telefono" placeholder="Teléfono" required>
+                <select id="servicio" required>
+                    <option value="">Selecciona un servicio</option>
+                    <option>Ortodoncia</option>
+                    <option>Diseño de sonrisa</option>
+                    <option>Implantes dentales</option>
+                </select>
+                <textarea id="mensaje" placeholder="Escribe tu mensaje" rows="4"></textarea>
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="opiniones-section">
+        <div class="opiniones-header">
+            <span>⭐ EXPERIENCIA DE NUESTROS PACIENTES</span>
+            <h2>¿Qué dicen nuestros clientes?</h2>
+            <p>Tu opinión nos ayuda a seguir mejorando nuestro servicio odontológico.</p>
+        </div>
+
+        {% if session.get('usuario_id') %}
+        <div class="opinion-form-container">
+            <h3>⭐ Déjanos tu opinión</h3>
+            <form action="/opinion" method="POST">
+                <div class="estrellas-input">
+                    <input type="radio" id="estrella5" name="calificacion" value="5" required>
+                    <label for="estrella5">★</label>
+                    <input type="radio" id="estrella4" name="calificacion" value="4">
+                    <label for="estrella4">★</label>
+                    <input type="radio" id="estrella3" name="calificacion" value="3">
+                    <label for="estrella3">★</label>
+                    <input type="radio" id="estrella2" name="calificacion" value="2">
+                    <label for="estrella2">★</label>
+                    <input type="radio" id="estrella1" name="calificacion" value="1">
+                    <label for="estrella1">★</label>
+                </div>
+                <textarea name="comentario" placeholder="Cuéntanos cómo fue tu experiencia..." maxlength="500" required></textarea>
+                <button type="submit" class="btn-opinion">Publicar opinión</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="opinion-login">
+            <p>⭐ ¿Ya visitaste nuestro consultorio?</p>
+            <a href="/login" class="btn-login-opinion">🔐 Iniciar sesión para dejar una opinión</a>
+        </div>
+        {% endif %}
+
+        <div class="opiniones-grid">
+            {% for opinion in opiniones[:6] %}
+            <div class="opinion-card">
+                <div class="opinion-top">
+                    <div class="cliente">
+                        <div class="avatar">{{ opinion.nombre[0]|upper }}</div>
+                        <div>
+                            <strong>{{ opinion.nombre }}</strong>
+                            <small>Paciente del consultorio</small>
+                        </div>
+                    </div>
+                    <div class="estrellas">
+                        {% for i in range(1, 6) %}
+                            {% if i <= opinion.calificacion %}
+                                <span>★</span>
+                            {% else %}
+                                <span class="estrella-vacia">★</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <p class="comentario">"{{ opinion.comentario }}"</p>
+                <small class="fecha-opinion">{{ opinion.fecha.strftime('%d/%m/%Y') }}</small>
+            </div>
+            {% else %}
+            <div class="sin-opiniones">
+                <h3>⭐ Sé el primero en dejar una opinión</h3>
+                <p>Todavía no tenemos opiniones de nuestros pacientes.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <div class="ai-modal" id="aiModal">
+        <div class="ai-box">
+            <button class="close-ai" onclick="closeAIAnalyzer()">✕</button>
+            <h2>🤖 SmileVision AI</h2>
+            <p>Sube una fotografía y visualiza cómo podría verse tu sonrisa después del tratamiento.</p>
+            
+            <div class="ai-status" id="aiStatus">Comprobando estado de IA...</div>
+
+            <div class="upload-area">
+                <input type="file" id="imageUpload" accept="image/*">
+                <label for="imageUpload" class="upload-label" id="uploadLabel">📸 Subir Fotografía</label>
+            </div>
+
+            <select id="tratamientoAI">
+                <option value="">Selecciona un tratamiento</option>
+                <option value="blanqueamiento">Blanqueamiento Dental</option>
+                <option value="ortodoncia">Ortodoncia</option>
+                <option value="diseno">Diseño de Sonrisa</option>
+                <option value="implantes">Implantes Dentales</option>
+            </select> <!-- El select se cierra aquí -->
+
+            <!-- El panel debe ir fuera -->
+            <div id="zonaImplantePanel" hidden class="bracket-color-panel">
+                <label for="zonaImplante">¿Qué espacio dental quieres restaurar?</label>
+                <input type="text" id="zonaImplante" maxlength="300" placeholder="Ej.: espacio superior a la izquierda">
+                <small>Describe la ubicación tal como aparece en la fotografía.</small>
+            </div>
+
+            <div class="bracket-color-panel" id="bracketColorPanel">
+                <label for="bracketColor">Color de las ligaduras</label>
+                <div class="color-picker-row">
+                    <input type="color" id="bracketColor" value="#38bdf8">
+                    <div class="color-swatches" aria-label="Colores rapidos para brackets">
+                        <button type="button" class="color-swatch active" data-color="#38bdf8" style="background:#38bdf8" title="Azul"></button>
+                        <button type="button" class="color-swatch" data-color="#ef4444" style="background:#ef4444" title="Rojo"></button>
+                        <button type="button" class="color-swatch" data-color="#a855f7" style="background:#a855f7" title="Morado"></button>
+                        <button type="button" class="color-swatch" data-color="#22c55e" style="background:#22c55e" title="Verde"></button>
+                        <button type="button" class="color-swatch" data-color="#f97316" style="background:#f97316" title="Naranja"></button>
+                        <button type="button" class="color-swatch" data-color="#f8fafc" style="background:#f8fafc" title="Blanco"></button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="analyze-btn" onclick="analyzeSmile()">Analizar Sonrisa</button>
+            <p class="ai-disclaimer">Esta simulacion es una vista estetica generada por IA y no reemplaza una valoracion odontologica profesional.</p>
+
+            <div class="preview-container">
+                <img id="previewImage">
+                <div class="scan-line"></div>
+            </div>
+            <div class="ai-result" id="aiResult"></div>
+        </div>
+    </div>
+
+    <a href="https://www.instagram.com/invensibles_software" class="btn-instagram" target="_blank">
+        <i class="fab fa-instagram"></i>
+    </a>
+
+    <div class="whatsapp-menu-container">
+        <div class="whatsapp-list" id="wa-list">
+            <div class="wa-header">Contactar con un asesor</div>
+            <a href="https://wa.me/573144760938" target="_blank" class="wa-item"><i class="fab fa-whatsapp"></i> <span>Asesor 1</span></a>
+            <a href="https://wa.me/573104774044" target="_blank" class="wa-item"><i class="fab fa-whatsapp"></i> <span>Asesor 2</span></a>
+            <a href="https://wa.me/573103592752" target="_blank" class="wa-item"><i class="fab fa-whatsapp"></i> <span>Asesor 3</span></a>
+            <a href="https://wa.me/573108659353" target="_blank" class="wa-item"><i class="fab fa-whatsapp"></i> <span>Asesor 4</span></a>
+        </div>
+        <button class="btn-wa-main" onclick="toggleWAMenu()">
+            <i class="fab fa-whatsapp"></i>
+        </button>
+    </div>
+
+    <!-- PIE DE PÁGINA (FOOTER) -->
+    <footer style="background-color: #1e293b; color: #f8fafc; padding: 40px 20px; margin-top: 50px; font-family: sans-serif;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 30px;">
+            <div style="flex: 1; min-width: 250px;">
+                <h3 style="color: #38bdf8; margin-bottom: 15px;">Consultorio Odontológico</h3>
+                <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.5;">Cuidando tu salud oral con la mejor tecnología y atención personalizada. Agenda tu valoración con nosotros.</p>
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+                <h4 style="color: #ffffff; margin-bottom: 15px;">Navegación</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; line-height: 2;">
+                    <li><a href="/faq" style="color: #94a3b8; text-decoration: none;">Preguntas Frecuentes</a></li>
+                    <li><a href="/citas" style="color: #94a3b8; text-decoration: none;">Agendar Cita</a></li>
+                    <li><a href="/ubicacion" style="color: #94a3b8; text-decoration: none;">Ubicación</a></li>
+                </ul>
+            </div>
+            <div style="flex: 1; min-width: 250px;">
+                <h4 style="color: #ffffff; margin-bottom: 15px;">Aspectos Legales</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; line-height: 2; font-size: 0.9rem;">
+                    <li><a href="/legales?tipo=privacidad" style="color: #94a3b8; text-decoration: none;">Política de Privacidad</a></li>
+                    <li><a href="/legales?tipo=terminos" style="color: #94a3b8; text-decoration: none;">Términos y Condiciones</a></li>
+                    <li><a href="/legales?tipo=devoluciones" style="color: #94a3b8; text-decoration: none;">Política de Devoluciones</a></li>
+                    <li><a href="/legales?tipo=garantias" style="color: #94a3b8; text-decoration: none;">Política de Garantías</a></li>
+                    <li><a href="/legales?tipo=cookies" style="color: #94a3b8; text-decoration: none;">Política de Cookies</a></li>
+                    <li><a href="/legales?tipo=tratamiento_datos" style="color: #94a3b8; text-decoration: none;">Tratamiento de Datos Personales</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="text-align: center; border-top: 1px solid #334155; margin-top: 30px; padding-top: 20px; color: #64748b; font-size: 0.85rem;">
+            &copy; 2026 Consultorio Odontológico. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <script src="static/js/citas.js"></script>
+    <script src="static/js/smilevision.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const nav = document.getElementById("menuPrincipal");
+            const rol = localStorage.getItem("rol");
+
+            if (rol === "admin" && nav) {
+                nav.innerHTML += '<a href="/admin" class="btn-login">Panel Admin</a>';
+            }
+        });
+
+        function openAIAnalyzer() {
+            document.getElementById('aiModal').style.display = 'flex';
+            document.body.style.overflow = "hidden";
+        }
+        
+        function closeAIAnalyzer() {
+            document.getElementById('aiModal').style.display = 'none';
+            document.getElementById('aiResult').innerHTML = "";
+            document.body.style.overflow = "auto";
+        }
+
+        function toggleWAMenu() {
+            document.getElementById('wa-list').classList.toggle('show-wa');
+        }
+
+        const slider = document.getElementById('slider');
+        if(slider) {
+            slider.addEventListener('input', (e) => {
+                const value = e.target.value;
+                document.getElementById('afterWrapper').style.width = `${value}%`;
+                document.querySelector('.slider-line').style.left = `${value}%`;
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendar Cita - Consultorio Odontológico</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='IMG/logoconsultorio.png') }}" alt="logotipo" class="logo">
+            <h1>Consultorio Odontológico</h1>
+        </div>
+        <nav>
+            <a href="/">Inicio</a>
+            <a href="/sobre_nosotros">Sobre Nosotros</a>
+            <a href="/citas">Citas</a>
+            <a href="/ubicacion">Ubicación</a>
+            <a href="/contactenos">Contáctenos</a>
+
+            {% if session.get('nombre') %}
+                <div class="user-info">
+                    <span class="user-name">👤 {{ session['nombre']|upper }}</span>
+                </div>
+                <a href="/logout" class="btn-logout">Cerrar Sesión</a>
+            {% else %}
+                <a href="/login" class="btn-login">Entrar</a>
+                <a href="/register" class="btn-register">Registro</a>
+            {% endif %}
+        </nav>
+    </header>
+
+<main class="seccion-citas">
+    <div class="cita-container">
+        <h2>Agendar Cita</h2>
+        <p style="color: #666; margin-bottom: 25px;">Reserva tu espacio con nuestros especialistas</p>
+        
+        <form action="/agendar_cita" method="POST">
+            <div class="input-group">
+                <label>Nombre del Paciente</label>
+                <input type="text" name="nombre" placeholder="Nombre completo" required>
+            </div>
+
+            <!-- SELECCIÓN DINÁMICA DE SERVICIOS -->
+            <div class="input-group">
+                <label>Servicio Odontológico</label>
+                <select name="servicio_id" required>
+                    <option value="">Selecciona un servicio</option>
+                    {% for servicio in servicios %}
+                        <option value="{{ servicio.id }}">{{ servicio.nombre }}</option>
+                    {% else %}
+                        <option value="">Consulta General</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Fecha deseada</label>
+                <input type="date" name="fecha" required>
+            </div>
+
+            <div class="input-group">
+                <label>Hora</label>
+                <select name="hora" required>
+                    <option value="">Selecciona un horario</option>
+                    <option>08:00 AM</option>
+                    <option>09:00 AM</option>
+                    <option>10:00 AM</option>
+                    <option>11:00 AM</option>
+                    <option>02:00 PM</option>
+                    <option>03:00 PM</option>
+                    <option>04:00 PM</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-agendar">Agendar Ahora</button>
+        </form>
+
+        <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">¿Ya tienes una cita?</p>
+            <a href="/mis_citas" class="btn-ver-historial">
+                📋 Ver mi historial de citas
+            </a>
+        </div>
+    </div>
+</main>
+
+    <a href="https://www.instagram.com/invensibles_software" class="btn-instagram" target="_blank">
+        <i class="fab fa-instagram"></i>
+    </a>
+
+<div class="whatsapp-menu-container">
+    <div class="whatsapp-list" id="wa-list">
+        <div class="wa-header">Contactar con un asesor</div>
+        <a href="https://wa.me/573144760938" target="_blank" class="wa-item">
+            <i class="fab fa-whatsapp"></i> <span>Asesor 1</span>
+        </a>
+        <a href="https://wa.me/573104774044" target="_blank" class="wa-item">
+            <i class="fab fa-whatsapp"></i> <span>Asesor 2</span>
+        </a>
+        <a href="https://wa.me/573103592752" target="_blank" class="wa-item">
+            <i class="fab fa-whatsapp"></i> <span>Asesor 3</span>
+        </a>
+        <a href="https://wa.me/573108659353" target="_blank" class="wa-item">
+            <i class="fab fa-whatsapp"></i> <span>Asesor 4</span>
+        </a>
+    </div>
+
+    <button class="btn-wa-main" onclick="toggleWAMenu()">
+        <i class="fab fa-whatsapp"></i>
+    </button>
+</div>
+
+<script>
+function toggleWAMenu() {
+    const list = document.getElementById('wa-list');
+    list.classList.toggle('show-wa');
+}
+
+window.onclick = function(event) {
+    if (!event.target.closest('.whatsapp-menu-container')) {
+        const list = document.getElementById('wa-list');
+        if (list.classList.contains('show-wa')) {
+            list.classList.remove('show-wa');
+        }
+    }
+}
+</script>
+</body>
+</html>

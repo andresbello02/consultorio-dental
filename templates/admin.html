@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrador</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='IMG/logoconsultorio.png') }}" class="logo">
+        <h1>Panel Administrador</h1>
+    </div>
+
+    <nav>
+        <a href="/">Inicio</a>
+        <a href="{{ url_for('admin_reportes') }}" class="btn-reportes" style="margin-right: 15px;">📊 Reportes</a>
+        <a href="/logout" class="btn-logout">Cerrar Sesión</a>
+    </nav>
+</header>
+
+<main style="max-width:1200px;margin:40px auto;padding:20px;">
+
+    <h2>👨‍💼 Panel de Administración</h2>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin:30px 0;">
+        <div class="card">
+            <h3>👥 Usuarios</h3>
+            <p>{{ total_usuarios }}</p>
+        </div>
+
+        <div class="card">
+            <h3>🦷 Pacientes</h3>
+            <p>{{ total_pacientes }}</p>
+        </div>
+
+        <div class="card">
+            <h3>📅 Citas</h3>
+            <p>{{ total_citas }}</p>
+        </div>
+
+        <div class="card">
+            <h3>⭐ Opiniones</h3>
+            <p>{{ total_opiniones }}</p>
+        </div>
+    </div>
+
+    <!-- GESTIÓN DE SERVICIOS -->
+    <h2 style="margin-top:50px;">🛠️ Gestión de Servicios Odontológicos</h2>
+
+    <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-top: 15px; border: 1px solid #ddd;">
+        <h3>Agregar Nuevo Servicio</h3>
+        <form action="{{ url_for('crear_servicio') }}" method="POST" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 10px;">
+            <input type="text" name="nombre" placeholder="Nombre del Servicio" required style="padding: 8px; border-radius: 4px; border: 1px solid #ccc; flex: 1; min-width: 200px;">
+            <input type="text" name="descripcion" placeholder="Descripción corta" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc; flex: 2; min-width: 300px;">
+            <button type="submit" style="padding: 8px 16px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">➕ Guardar Servicio</button>
+        </form>
+    </div>
+
+    <div style="overflow-x:auto; margin-top:20px;">
+        <table style="width:100%;border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for servicio in servicios %}
+                <tr>
+                    <td>{{ servicio.id }}</td>
+                    <form action="{{ url_for('editar_servicio', servicio_id=servicio.id) }}" method="POST">
+                        <td>
+                            <input type="text" name="nombre" value="{{ servicio.nombre }}" required style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; width: 90%;">
+                        </td>
+                        <td>
+                            <input type="text" name="descripcion" value="{{ servicio.descripcion or '' }}" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; width: 90%;">
+                        </td>
+                        <td>
+                            {% if servicio.activo %}
+                                <span style="color: green; font-weight: bold;">Activo</span>
+                            {% else %}
+                                <span style="color: red; font-weight: bold;">Inactivo</span>
+                            {% endif %}
+                        </td>
+                        <td style="display: flex; gap: 5px;">
+                            <button type="submit" style="padding: 5px 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">💾 Guardar</button>
+                    </form>
+                            <form action="{{ url_for('estado_servicio', servicio_id=servicio.id) }}" method="POST" style="margin:0;">
+                                <button type="submit" style="padding: 5px 10px; background-color: {% if servicio.activo %}#dc3545{% else %}#28a745{% endif %}; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                    {% if servicio.activo %}Desactivar{% else %}Activar{% endif %}
+                                </button>
+                            </form>
+                        </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 15px;">No hay servicios registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- USUARIOS Y ROLES -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top:50px;">
+        <h2>👥 Usuarios y roles</h2>
+        <form action="{{ url_for('admin') }}" method="GET" style="display: flex; gap: 8px;">
+            {% if buscar_cita %}<input type="hidden" name="buscar_cita" value="{{ buscar_cita }}">{% endif %}
+            <input type="text" name="buscar_usuario" value="{{ buscar_usuario or '' }}" placeholder="Buscar por nombre o correo..." style="padding: 6px 12px; border-radius: 4px; border: 1px solid #ccc; width: 250px;">
+            <button type="submit" style="padding: 6px 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">🔍 Buscar</button>
+            {% if buscar_usuario %}
+                <a href="{{ url_for('admin', buscar_cita=buscar_cita) }}" style="padding: 6px 12px; background-color: #6c757d; color: white; border-radius: 4px; text-decoration: none; display: inline-block;">❌ Limpiar</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;margin-top:10px;">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.nombre }}</td>
+                    <td>{{ usuario.correo }}</td>
+                    <td>
+                        <form action="{{ url_for('cambiar_rol', usuario_id=usuario.id) }}" method="POST" style="margin:0;">
+                            <select name="rol" onchange="this.form.submit()" style="padding: 5px 10px; border-radius: 4px; border: 1px solid #ccc;">
+                                <option value="paciente" {% if usuario.rol == 'paciente' %}selected{% endif %}>Paciente</option>
+                                <option value="admin" {% if usuario.rol == 'admin' %}selected{% endif %}>Administrador</option>
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" style="text-align: center; padding: 15px;">No se encontraron usuarios.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- CITAS -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top:50px;">
+        <h2>📅 Citas</h2>
+        <form action="{{ url_for('admin') }}" method="GET" style="display: flex; gap: 8px;">
+            {% if buscar_usuario %}<input type="hidden" name="buscar_usuario" value="{{ buscar_usuario }}">{% endif %}
+            <input type="text" name="buscar_cita" value="{{ buscar_cita or '' }}" placeholder="Buscar paciente, servicio o estado..." style="padding: 6px 12px; border-radius: 4px; border: 1px solid #ccc; width: 250px;">
+            <button type="submit" style="padding: 6px 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">🔍 Buscar</button>
+            {% if buscar_cita %}
+                <a href="{{ url_for('admin', buscar_usuario=buscar_usuario) }}" style="padding: 6px 12px; background-color: #6c757d; color: white; border-radius: 4px; text-decoration: none; display: inline-block;">❌ Limpiar</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;margin-top:10px;">
+            <thead>
+                <tr>
+                    <th>Paciente</th>
+                    <th>Servicio</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cita in citas %}
+                <tr>
+                    <td>{{ cita.paciente_nombre }}</td>
+                    <td>{{ cita.servicio_nombre or 'General' }}</td>
+                    <td>{{ cita.fecha }}</td>
+                    <td>{{ cita.hora }}</td>
+                    <td>
+                        <form action="{{ url_for('cambiar_estado_cita', cita_id=cita.id) }}" method="POST" style="margin:0;">
+                            <select name="estado" onchange="this.form.submit()" style="padding: 5px 10px; border-radius: 4px; border: 1px solid #ccc;">
+                                <option value="Pendiente" {% if cita.estado == 'Pendiente' %}selected{% endif %}>Pendiente</option>
+                                <option value="Confirmada" {% if cita.estado == 'Confirmada' %}selected{% endif %}>Confirmada</option>
+                                <option value="Completada" {% if cita.estado == 'Completada' %}selected{% endif %}>Completada</option>
+                                <option value="Cancelada" {% if cita.estado == 'Cancelada' %}selected{% endif %}>Cancelada</option>
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 15px;">No se encontraron citas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</main>
+
+</body>
+</html>

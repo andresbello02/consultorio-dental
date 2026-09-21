@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Citas - Consultorio Odontológico</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='IMG/logoconsultorio.png') }}" class="logo">
+            <h1>Consultorio Odontológico</h1>
+        </div>
+        <nav>
+            <a href="/">Inicio</a>
+            <a href="/citas">Citas</a>
+            <a href="/mis_citas">Mi Historial</a>
+            <a href="/logout">Cerrar Sesión</a>
+        </nav>
+    </header>
+
+    <section style="padding: 50px; max-width: 900px; margin: auto;">
+        <h2 style="color: #1E88E5; text-align: center;">Tus Próximas Citas</h2>
+        <table class="tabla-historial">
+            <thead>
+                <tr>
+                    <th>Paciente</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cita in proximas %}
+                <tr>
+                    <td>{{ cita.paciente_nombre }}</td>
+                    <td>{{ cita.fecha }}</td>
+                    <td>{{ cita.hora }}</td>
+                    <td>{{ cita.estado }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" style="text-align:center;">No tienes citas programadas.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2 style="color: #777; text-align: center; margin-top: 50px;">Citas Pasadas</h2>
+        <table class="tabla-historial pasadas">
+            <tbody>
+                {% for cita in pasadas %}
+                <tr>
+                    <td>{{ cita.paciente_nombre }}</td>
+                    <td>{{ cita.fecha }}</td>
+                    <td>{{ cita.hora }}</td>
+                    <td>Completada</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+    <a href="https://www.instagram.com/invensibles_software" class="btn-instagram" target="_blank">
+        <i class="fab fa-instagram"></i>
+    </a>
+
+<div class="whatsapp-menu-container">
+    <div class="whatsapp-list" id="wa-list">
+        <div class="wa-header">Contactar con un asesor</div>
+        <a href="https://wa.me/573144760938" target="_blank" class="wa-item">
+            <i class="fab fa-whatsapp"></i> <span>Asesor 1</span>
+        </a>
+        <a href="https://wa.me/573104774044" target="_blank" class="wa-item">
+            <i class="fab fa-whatsapp"></i> <span>Asesor 2</span>
+        </a>
+        <a href="https://wa.me/573103592752" target="_blank" class="wa-item">
+            <i class="fab fa-whatsapp"></i> <span>Asesor 3</span>
+        </a>
+        <a href="https://wa.me/573108659353" target="_blank" class="wa-item">
+            <i class="fab fa-whatsapp"></i> <span>Asesor 4</span>
+        </a>
+    </div>
+
+    <button class="btn-wa-main" onclick="toggleWAMenu()">
+        <i class="fab fa-whatsapp"></i>
+    </button>
+</div>
+
+<script>
+function toggleWAMenu() {
+    const list = document.getElementById('wa-list');
+    list.classList.toggle('show-wa');
+}
+
+// Opcional: Cerrar el menú si haces clic fuera de él
+window.onclick = function(event) {
+    if (!event.target.closest('.whatsapp-menu-container')) {
+        const list = document.getElementById('wa-list');
+        if (list.classList.contains('show-wa')) {
+            list.classList.remove('show-wa');
+        }
+    }
+}
+</script>
+</body>
+</html>

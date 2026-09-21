@@ -1,0 +1,9 @@
+google-genai
+requests
+mysql-connector-python
+python-dotenv
+Flask
+Flask-Mail
+itsdangerous
+huggingface_hub
+Pillow

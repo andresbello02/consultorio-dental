@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultorio Odontológico</title>
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo-container">
+            <img src="../static/IMG/logoconsultorio.png" alt="logotipo" class="logo">
+            <h1>Consultorio Odontológico</h1>
+        </div>
+<nav>
+    <a href="/">Inicio</a>
+    <a href="/sobre_nosotros">Sobre Nosotros</a>
+    <a href="/citas">Citas</a>
+    <a href="/ubicacion">Ubicación</a>
+    <a href="/contactenos">Contáctenos</a>
+
+    {% if session.get('nombre') %}
+        <div class="user-info">
+            <span class="user-name">👤 {{ session['nombre'] }}</span>
+        </div>
+        <a href="/logout" class="btn-logout">Cerrar Sesión</a>
+    {% else %}
+        <a href="/login" class="btn-login">Entrar</a>
+        <a href="/register" class="btn-register">Registro</a>
+    {% endif %}
+</nav>
+        <script>
+
+    let rol = localStorage.getItem("rol")
+
+    if(rol === "admin"){
+    document.getElementById("adminPanel").style.display = "inline-block"
+    }
+
+    </script>
+    </header>
+
+<section class="formulario">
+        <div class="formulario-contenido">
+            <div class="formulario-texto">
+                <h2>Contáctanos</h2>
+                <p>Agenda tu cita con nuestros especialistas. Estamos comprometidos con tu salud dental.</p>
+            </div>
+
+            <form>
+    <div class="fila">
+        <input type="text" placeholder="Nombre" required>
+        <input type="text" placeholder="Apellido" required>
+    </div>
+
+    <input type="email" placeholder="Correo electrónico" required>
+    <input type="tel" placeholder="Teléfono" required>
+
+    <!-- NUEVA OPCIÓN HORARIO DE CONTACTO -->
+    <select required>
+        <option value="">Selecciona horario de contacto</option>
+        <option>Mañana (8:00 AM - 12:00 PM)</option>
+        <option>Tarde (1:00 PM - 5:00 PM)</option>
+        <option>Noche (6:00 PM - 8:00 PM)</option>
+        <option>Cualquier horario</option>
+    </select>
+
+    <select required>
+        <option value="">Selecciona un servicio</option>
+        <option>Ortodoncia</option>
+        <option>Blanqueamiento</option>
+        <option>Implantes</option>
+        <option>Diseño de sonrisa</option>
+    </select>
+
+    <textarea placeholder="Escribe tu mensaje" rows="4"></textarea>
+    <button type="submit">Enviar</button>
+</form>
+        </div>
+    </section>
+
+    <script>
+        function mostrarmensaje() {
+            alert("Redirigiendo al sistema de citas...");
+        }
+    </script>
+    
+    <script src="../static/js/menu.js"></script>
+    <a href="https://www.instagram.com/invensibles_software" class="btn-instagram" target="_blank">
+        <i class="fab fa-instagram"></i>
+    </a>
+<div class="whatsapp-menu-container">
+    <div class="whatsapp-list" id="wa-list">
+        <div class="wa-header">Contactar con un asesor</div>
+        <a href="https://wa.me/573144760938" target="_blank" class="wa-item">
+            <i class="fab fa-whatsapp"></i> <span>Asesor 1</span>
+        </a>
+        <a href="https://wa.me/573104774044" target="_blank" class="wa-item">
+            <i class="fab fa-whatsapp"></i> <span>Asesor 2</span>
+        </a>
+        <a href="https://wa.me/573103592752" target="_blank" class="wa-item">
+            <i class="fab fa-whatsapp"></i> <span>Asesor 3</span>
+        </a>
+        <a href="https://wa.me/573108659353" target="_blank" class="wa-item">
+            <i class="fab fa-whatsapp"></i> <span>Asesor 4</span>
+        </a>
+    </div>
+
+    <button class="btn-wa-main" onclick="toggleWAMenu()">
+        <i class="fab fa-whatsapp"></i>
+    </button>
+</div>
+
+<script>
+function toggleWAMenu() {
+    const list = document.getElementById('wa-list');
+    list.classList.toggle('show-wa');
+}
+
+// Opcional: Cerrar el menú si haces clic fuera de él
+window.onclick = function(event) {
+    if (!event.target.closest('.whatsapp-menu-container')) {
+        const list = document.getElementById('wa-list');
+        if (list.classList.contains('show-wa')) {
+            list.classList.remove('show-wa');
+        }
+    }
+}
+</script>
+</body>
+</html>
