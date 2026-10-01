@@ -22,12 +22,16 @@ from db import conectar, insertar_usuario, verificar_usuario
 
 from db import crear_tabla_servicios, agregar_columna_servicio_id
 
-with app.app_context():
-    try:
-        crear_tabla_servicios()
-        agregar_columna_servicio_id()
-    except Exception as e:
-        print("Error al inicializar la base de datos:", e)
+@app.before_request
+def inicializar_bd_una_vez():
+    global tablas_inicializadas
+    if not tablas_inicializadas:
+        try:
+            crear_tabla_servicios()
+            agregar_columna_servicio_id()
+            tablas_inicializadas = True
+        except Exception as e:
+            print("Error inicializando BD:", e)
 
 # ------------------------------------------------------------------------------
 # CONFIGURACIÓN E INICIALIZACIÓN
