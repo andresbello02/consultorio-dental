@@ -20,6 +20,15 @@ load_dotenv()
 
 from db import conectar, insertar_usuario, verificar_usuario
 
+from db import crear_tabla_servicios, agregar_columna_servicio_id
+
+with app.app_context():
+    try:
+        crear_tabla_servicios()
+        agregar_columna_servicio_id()
+    except Exception as e:
+        print("Error al inicializar la base de datos:", e)
+
 # ------------------------------------------------------------------------------
 # CONFIGURACIÓN E INICIALIZACIÓN
 # ------------------------------------------------------------------------------

@@ -287,7 +287,7 @@ def crear_tabla_servicios():
             conexion.close()
 
 # Ejecutar automáticamente al importar o iniciar db.py
-crear_tabla_servicios()
+# crear_tabla_servicios()
 
 def agregar_columna_servicio_id():
     conexion = None
@@ -321,4 +321,4 @@ def agregar_columna_servicio_id():
             conexion.close()
 
 # Ejecutar la modificación al iniciar
-agregar_columna_servicio_id()
+# agregar_columna_servicio_id()
