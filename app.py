@@ -309,11 +309,14 @@ def register():
         if password != confirmar:
             return render_template('register.html', error="❌ Las contraseñas no coinciden.")
 
+        # Intentar insertar al usuario
         registrado = insertar_usuario(nombre, email, password, "paciente")
+        
         if registrado:
             return redirect(url_for('login'))
-
-        return render_template('register.html', error="❌ No se pudo registrar. Revisa los logs de base de datos.")
+        else:
+            # CORRECCIÓN UI/UX: Mensaje descriptivo en lugar de "revisa logs de BD"
+            return render_template('register.html', error="❌ El correo electrónico ya se encuentra registrado o no es válido.")
 
     return render_template('register.html')
 
@@ -321,31 +324,42 @@ def register():
 def recuperar():
     if request.method == 'POST':
         email = request.form.get('email', '').strip()
+        
+        # Verificar si el usuario realmente existe antes de enviar correo
+        conexion = conectar()
+        cursor = conexion.cursor(dictionary=True)
+        cursor.execute("SELECT id FROM usuarios WHERE correo = %s OR email = %s", (email, email))
+        usuario = cursor.fetchone()
+        cursor.close()
+        conexion.close()
+
+        if not usuario:
+            return render_template('recuperar.html', error="❌ No existe ninguna cuenta registrada con este correo.")
+
         token = serializer.dumps(email, salt='recuperar-clave')
         link = url_for('restablecer_password', token=token, _external=True)
 
         try:
             msg = Message(
-                subject="Restablecer Contrasena",
+                subject="Restablecer Contraseña - Consultorio Odontológico",
                 recipients=[email],
-                body=f"Haz clic en el siguiente enlace para restablecer tu contrasena:\n{link}"
+                body=f"Hola,\n\nHaz clic en el siguiente enlace para restablecer tu contraseña:\n{link}\n\nSi no solicitaste este cambio, ignora este correo."
             )
             mail.send(msg)
-            return render_template('recuperar.html', mensaje="✅ Se ha enviado un enlace a tu correo.")
+            return render_template('recuperar.html', mensaje="✅ Se ha enviado un enlace de recuperación a tu correo.")
         except Exception as e:
             print("❌ Error al enviar el correo de recuperación:", e)
-            return render_template('recuperar.html', error="❌ No se pudo enviar el correo.")
+            return render_template('recuperar.html', error="❌ No se pudo enviar el correo. Inténtalo más tarde.")
 
     return render_template('recuperar.html')
 
 @app.route('/restablecer/<token>', methods=['GET', 'POST'])
 def restablecer_password(token):
-    try:
-        email = serializer.loads(token, salt='recuperar-clave', max_age=3600)
-    except SignatureExpired:
-        return render_template('recuperar.html', error='El enlace ha expirado. Solicita uno nuevo.')
-    except BadTimeSignature:
-        return render_template('recuperar.html', error='El enlace de recuperación es inválido.')
+    # Buscar si el token es válido en la base de datos
+    usuario = obtener_usuario_por_token(token)
+    
+    if not usuario:
+        return render_template('recuperar.html', error='❌ El enlace de recuperación es inválido o ha expirado.')
 
     if request.method == 'POST':
         recaptcha_response = request.form.get('g-recaptcha-response')
@@ -358,7 +372,10 @@ def restablecer_password(token):
         if password != confirmar:
             return render_template('restablecer.html', token=token, error='Las contraseñas no coinciden.')
 
-        return render_template('login.html', mensaje='Contraseña actualizada con éxito. Ahora puedes iniciar sesión.')
+        # Actualizar contraseña e inutilizar token usando db.py
+        actualizar_password_y_limpiar_token(usuario['id'], password)
+
+        return render_template('login.html', mensaje='✅ Contraseña actualizada con éxito. Ahora puedes iniciar sesión.')
 
     return render_template('restablecer.html', token=token)
 
@@ -376,12 +393,20 @@ def agendar_cita():
         return redirect(url_for('login'))
 
     nombre = request.form.get('nombre')
-    fecha = request.form.get('fecha')
+    fecha_str = request.form.get('fecha')
     hora = request.form.get('hora')
     servicio_id = request.form.get('servicio_id')
 
-    if not nombre or not fecha or not hora:
+    if not nombre or not fecha_str or not hora:
         return "<script>alert('❌ Por favor completa todos los campos.'); window.location.href='/citas';</script>"
+
+    # === CORRECCIÓN AUDITORÍA: Validar que no sea fecha pasada ===
+    try:
+        fecha_obj = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+        if fecha_obj < date.today():
+            return "<script>alert('❌ No puedes agendar citas en fechas pasadas.'); window.location.href='/citas';</script>"
+    except ValueError:
+        return "<script>alert('❌ Formato de fecha inválido.'); window.location.href='/citas';</script>"
 
     conexion = None
     cursor = None
@@ -394,7 +419,7 @@ def agendar_cita():
         cursor.execute("""
             INSERT INTO citas (usuario_id, paciente_nombre, fecha, hora, estado, servicio_id)
             VALUES (%s, %s, %s, %s, %s, %s)
-        """, (usuario_id, nombre, fecha, hora, "Pendiente", servicio_id if servicio_id else None))
+        """, (usuario_id, nombre, fecha_str, hora, "Pendiente", servicio_id if servicio_id else None))
 
         conexion.commit()
 
@@ -409,6 +434,7 @@ def agendar_cita():
     finally:
         if cursor: cursor.close()
         if conexion and conexion.is_connected(): conexion.close()
+
 
 @app.route('/mis_citas')
 def mis_citas():
@@ -436,9 +462,12 @@ def mis_citas():
 
     for cita in citas:
         fecha_cita = cita['fecha']
+        
+        # === CORRECCIÓN: Convertir a date sin importar el tipo de dato ===
         if isinstance(fecha_cita, str):
-            from datetime import datetime
             fecha_cita = datetime.strptime(fecha_cita, '%Y-%m-%d').date()
+        elif isinstance(fecha_cita, datetime):
+            fecha_cita = fecha_cita.date()
 
         if cita['estado'] == 'Completada' or fecha_cita < hoy:
             pasadas.append(cita)

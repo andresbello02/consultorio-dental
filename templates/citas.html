@@ -59,7 +59,7 @@
 
             <div class="input-group">
                 <label>Fecha deseada</label>
-                <input type="date" name="fecha" required>
+                <input type="date" id="fecha_cita" name="fecha" required>
             </div>
 
             <div class="input-group">
@@ -129,5 +129,15 @@ window.onclick = function(event) {
     }
 }
 </script>
+
+<script>
+    // Establece la fecha actual como el límite mínimo para agendar
+    const fechaInput = document.getElementById('fecha_cita');
+    if (fechaInput) {
+        const hoy = new Date().toISOString().split('T')[0];
+        fechaInput.setAttribute('min', hoy);
+    }
+</script>
+
 </body>
 </html>

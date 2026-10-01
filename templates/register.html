@@ -63,21 +63,15 @@
                 required
             >
 
-            <input
-                type="password"
-                name="password"
-                id="password"
-                placeholder="Crear contraseña"
-                required
-            >
+            <div class="password-container" style="position: relative; margin-bottom: 15px;">
+                <input type="password" name="password" id="password" placeholder="Crear contraseña" required style="width: 100%; padding-right: 40px; box-sizing: border-box;">
+                <i class="fa-solid fa-eye" id="toggleRegPassword" onclick="togglePasswordVisibility('password', 'toggleRegPassword')" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666;"></i>
+            </div>
 
-            <input
-                type="password"
-                name="confirmar"
-                id="confirmar"
-                placeholder="Confirmar contraseña"
-                required
-            >
+            <div class="password-container" style="position: relative; margin-bottom: 15px;">
+                <input type="password" name="confirmar" id="confirmar" placeholder="Confirmar contraseña" required style="width: 100%; padding-right: 40px; box-sizing: border-box;">
+                <i class="fa-solid fa-eye" id="toggleConfirmPassword" onclick="togglePasswordVisibility('confirmar', 'toggleConfirmPassword')" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666;"></i>
+            </div>
 
             <!-- Google reCAPTCHA -->
             <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" style="margin-bottom: 15px; display: flex; justify-content: center;"></div>
@@ -127,6 +121,23 @@ window.onclick = function(event) {
         if (list.classList.contains('show-wa')) {
             list.classList.remove('show-wa');
         }
+    }
+}
+</script>
+
+<script>
+function togglePasswordVisibility(inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+    
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        input.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
     }
 }
 </script>

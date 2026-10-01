@@ -190,11 +190,15 @@ def actualizar_password_y_limpiar_token(usuario_id, nueva_password):
     conexion = conectar()
     cursor = conexion.cursor()
     
+    # 1. Hashear la nueva contraseña antes de guardar
+    password_hash = generate_password_hash(nueva_password)
+    
+    # 2. Corregido: 'password' en lugar de 'contraseña'
     cursor.execute("""
         UPDATE usuarios 
-        SET contraseña = %s, reset_token = NULL, reset_token_exp = NULL 
+        SET password = %s, reset_token = NULL, reset_token_exp = NULL 
         WHERE id = %s
-    """, (nueva_password, usuario_id))
+    """, (password_hash, usuario_id))
     
     conexion.commit()
     cursor.close()

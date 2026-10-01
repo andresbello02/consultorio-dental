@@ -55,7 +55,10 @@
 
                 <input type="email" name="email" placeholder="Correo electrónico" required>
                 
-                <input type="password" name="password" placeholder="Contraseña" required>
+                <div class="password-container" style="position: relative; margin-bottom: 15px;">
+                    <input type="password" name="password" id="loginPassword" placeholder="Contraseña" required style="width: 100%; padding-right: 40px; box-sizing: border-box;">
+                    <i class="fa-solid fa-eye" id="toggleLoginPassword" onclick="togglePasswordVisibility('loginPassword', 'toggleLoginPassword')" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666;"></i>
+                </div>
                 
                 <!-- Enlace de recuperación de contraseña -->
                 <div style="text-align: right; margin-bottom: 15px;">
@@ -112,5 +115,22 @@ window.onclick = function(event) {
     }
 }
 </script>
-    </body>
+
+<script>
+function togglePasswordVisibility(inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+    
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        input.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
+</script>
+</body>
 </html>
