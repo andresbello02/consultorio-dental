@@ -6,35 +6,49 @@ import datetime
 import logging
 from io import BytesIO
 from datetime import date
-from google import genai
-from google.genai import types
 import base64
 import requests
 import mysql.connector
+
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
-from dotenv import load_dotenv
-load_dotenv()
+from google import genai
+from google.genai import types
 
-from db import conectar, insertar_usuario, verificar_usuario
+# ---------------------------------------------------------
+# 1. CARGAR VARIABLES DE ENTORNO
+# ---------------------------------------------------------
+load_dotenv()[cite: 13]
 
-from db import crear_tabla_servicios, agregar_columna_servicio_id
+# ---------------------------------------------------------
+# 2. CREAR INSTANCIA DE FLASK (¡CRUCIAL PARA EVITAR NAMEERROR!)
+# ---------------------------------------------------------
+app = Flask(__name__)
+app.secret_key = os.getenv("SECRET_KEY", "mi_clave_secreta_odontologia")
 
-# Bandera para ejecutar la inicialización solo una vez
-tablas_inicializadas = False
+# ---------------------------------------------------------
+# 3. IMPORTAR FUNCIONES DE BASE DE DATOS
+# ---------------------------------------------------------
+from db import conectar, insertar_usuario, verificar_usuario[cite: 13]
+from db import crear_tabla_servicios, agregar_columna_servicio_id[cite: 13, 14]
+
+# ---------------------------------------------------------
+# 4. INICIALIZACIÓN SEGURA DE LA BASE DE DATOS
+# ---------------------------------------------------------
+tablas_inicializadas = False[cite: 13, 14]
 
 @app.before_request
 def inicializar_bd_una_vez():
     global tablas_inicializadas
     if not tablas_inicializadas:
         try:
-            crear_tabla_servicios()
-            agregar_columna_servicio_id()
-            tablas_inicializadas = True
+            crear_tabla_servicios()[cite: 14]
+            agregar_columna_servicio_id()[cite: 14]
+            tablas_inicializadas = True[cite: 14]
         except Exception as e:
-            print("Error al inicializar la base de datos:", e)
+            print("Error al inicializar la base de datos:", e)[cite: 14]
 
 # ------------------------------------------------------------------------------
 # CONFIGURACIÓN E INICIALIZACIÓN
