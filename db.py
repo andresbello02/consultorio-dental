@@ -3,10 +3,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 
 def conectar():
-    # Detecta si estás en Alwaysdata o en local
     host = os.getenv("DB_HOST", "mysql-consultorioodontologico990501.alwaysdata.net")
-    user = os.getenv("DB_USER", "382366_admin")  # Tu usuario de Alwaysdata
-    password = os.getenv("DB_PASSWORD", "*NIKOL990501")
+    user = os.getenv("DB_USER", "382366_admin")
+    password = os.getenv("DB_PASSWORD", "*NIKOL990501")  # <--- Coloca tu contraseña exacta
     database = os.getenv("DB_NAME", "consultorioodontologico990501_db")
 
     return mysql.connector.connect(
