@@ -3,85 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultorio Odontológico</title>
-    <link rel="stylesheet" href="../static/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Ubicación - Consultorio Odontológico</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
     <header class="navbar">
         <div class="logo-container">
-            <img src="../static/IMG/logoconsultorio.png" alt="logotipo" class="logo">
+            <img src="{{ url_for('static', filename='IMG/logoconsultorio.png') }}" alt="logotipo" class="logo">
             <h1>Consultorio Odontológico</h1>
         </div>
-<nav>
-    <a href="/">Inicio</a>
-    <a href="/sobre_nosotros">Sobre Nosotros</a>
-    <a href="/citas">Citas</a>
-    <a href="/ubicacion">Ubicación</a>
-    <a href="/contactenos">Contáctenos</a>
+        <nav id="menuPrincipal">
+            <a href="/">Inicio</a>
+            <a href="/sobre_nosotros">Sobre Nosotros</a>
+            <a href="/citas">Citas</a>
+            <a href="/ubicacion">Ubicación</a>
+            <a href="/contactenos">Contáctenos</a>
 
-    {% if session.get('nombre') %}
-        <div class="user-info">
-            <span class="user-name">👤 {{ session['nombre'] }}</span>
-        </div>
-        <a href="/logout" class="btn-logout">Cerrar Sesión</a>
-    {% else %}
-        <a href="/login" class="btn-login">Entrar</a>
-        <a href="/register" class="btn-register">Registro</a>
-    {% endif %}
-</nav>
+            {% if session.get('nombre') %}
+                <div class="user-info">
+                    <span class="user-name">👤 {{ session['nombre'] }}</span>
+                </div>
+                <a href="/logout" class="btn-logout">Cerrar Sesión</a>
+            {% else %}
+                <a href="/login" class="btn-login">Entrar</a>
+                <a href="/register" class="btn-register">Registro</a>
+            {% endif %}
+        </nav>
     </header>
 
-    <script>
-        // Lógica para el menú dinámico
-        document.addEventListener("DOMContentLoaded", function() {
-            const nav = document.getElementById("menuPrincipal");
-            const rol = localStorage.getItem("rol");
+    <main style="padding: 20px; text-align: center;">
+        <h2 style="color: #1E88E5; margin-bottom: 20px;">Ubicación - Calle 127 Edificio Pluss</h2>
 
-            if (rol === "admin") {
-                nav.innerHTML += '<a href="admin.html" class="btn-login">Panel Admin</a>';
-                nav.innerHTML += '<a href="#" onclick="logout()" class="btn-register">Salir</a>';
-            } else if (rol === "paciente") {
-                nav.innerHTML += '<a href="#" onclick="logout()" class="btn-register">Salir</a>';
-            } else {
-                nav.innerHTML += '<a href="/login" class="btn-login">Login</a>';
-                nav.innerHTML += '<a href="/register" class="btn-register">Register</a>';
-            }
-        });
+        <iframe
+            width="100%"
+            height="500"
+            style="border:0; border-radius: 12px;"
+            loading="lazy"
+            allowfullscreen
+            src="https://www.google.com/maps?q=Calle+127+Edificio+Pluss+Bogota&output=embed">
+        </iframe>
+    </main>
 
-        function logout() {
-            localStorage.removeItem("rol");
-            window.location.href = "/login";
-        }
-
-        function scrollForm() {
-            document.getElementById('seccion-cita').scrollIntoView({behavior: 'smooth'});
-        }
-    </script>
-    <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Ubicación</title>
-</head>
-<body>
-
-  <h2>Ubicación - Calle 127 Edificio Pluss</h2>
-
-  <iframe
-    width="100%"
-    height="500"
-    style="border:0;"
-    loading="lazy"
-    allowfullscreen
-    src="https://www.google.com/maps?q=Calle+127+Edificio+Pluss+Bogota&output=embed">
-  </iframe>
-
-    <script src="../static/js/menu.js"></script>
+    <!-- Botón Flotante Instagram -->
     <a href="https://www.instagram.com/invensibles_software" class="btn-instagram" target="_blank">
         <i class="fab fa-instagram"></i>
     </a>
+
+    <!-- Menú Flotante WhatsApp -->
     <div class="whatsapp-menu-container">
         <div class="whatsapp-list" id="wa-list">
             <div class="wa-header">Contactar con un asesor</div>
@@ -95,11 +65,15 @@
         </button>
     </div>
 
-    <button class="btn-wa-main" onclick="toggleWAMenu()">
-        <i class="fab fa-whatsapp"></i>
-    </button>
-</div>
-</body>
-</html>
+    <script src="{{ url_for('static', filename='js/menu.js') }}"></script>
+    <script>
+        function toggleWAMenu() {
+            const list = document.getElementById("wa-list");
+            if (list) {
+                list.classList.toggle("active");
+                list.classList.toggle("show");
+            }
+        }
+    </script>
 </body>
 </html>

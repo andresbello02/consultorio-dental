@@ -116,9 +116,9 @@
         <div class="before-after-container">
             <div class="before-after">
                 <!-- CAMBIO: Uso de url_for, formato .webp y loading="lazy" -->
-                <img src="{{ url_for('static', filename='IMG/antes.webp') }}" class="img-before" loading="lazy" alt="Antes">
+                <img src="{{ url_for('static', filename='IMG/antes.jpg') }}" class="img-before" loading="lazy" alt="Antes">
                 <div class="after-wrapper" id="afterWrapper">
-                    <img src="{{ url_for('static', filename='IMG/despues.webp') }}" class="img-after" loading="lazy" alt="Después">
+                    <img src="{{ url_for('static', filename='IMG/despues.jpg') }}" class="img-after" loading="lazy" alt="Después">
                 </div>
                 <input type="range" min="0" max="100" value="50" class="slider" id="slider">
                 <div class="slider-line"></div>

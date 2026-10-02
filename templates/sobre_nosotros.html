@@ -3,92 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultorio Odontolgico</title>
+    <title>Sobre Nosotros - Consultorio Odontológico</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <header class="navbar">
         <div class="logo-container">
-            <img src="../static/IMG/logoconsultorio.png" alt="logotipo" class="logo">
+            <img src="{{ url_for('static', filename='IMG/logoconsultorio.png') }}" alt="logotipo" class="logo">
             <h1>Consultorio Odontológico</h1>
         </div>
-<nav>
-    <a href="/">Inicio</a>
-    <a href="/sobre_nosotros">Sobre Nosotros</a>
-    <a href="/citas">Citas</a>
-    <a href="/ubicacion">Ubicación</a>
-    <a href="/contactenos">Contáctenos</a>
+        <nav id="menuPrincipal">
+            <a href="/">Inicio</a>
+            <a href="/sobre_nosotros">Sobre Nosotros</a>
+            <a href="/citas">Citas</a>
+            <a href="/ubicacion">Ubicación</a>
+            <a href="/contactenos">Contáctenos</a>
 
-    {% if session.get('nombre') %}
-        <div class="user-info">
-            <span class="user-name">👤 {{ session['nombre'] }}</span>
-        </div>
-        <a href="/logout" class="btn-logout">Cerrar Sesión</a>
-    {% else %}
-        <a href="/login" class="btn-login">Entrar</a>
-        <a href="/register" class="btn-register">Registro</a>
-    {% endif %}
-</nav>
+            {% if session.get('nombre') %}
+                <div class="user-info">
+                    <span class="user-name">👤 {{ session['nombre'] }}</span>
+                </div>
+                <a href="/logout" class="btn-logout">Cerrar Sesión</a>
+            {% else %}
+                <a href="/login" class="btn-login">Entrar</a>
+                <a href="/register" class="btn-register">Registro</a>
+            {% endif %}
+        </nav>
     </header>
 
     <section class="hero hero-nosotros"> 
         <h2>Conoce Sobre Nosotros</h2>
-        <p>Aqui encontraras informacion sobre nuestros especialistas</p>
+        <p>Aquí encontrarás información sobre nuestros especialistas</p>
     </section>
 
     <section class="especialistas-lista">
         <h2 style="color: #1E88E5; margin-bottom: 40px; margin-left: 25px;">Nuestros Especialistas</h2>
 
         <div class="especialista-item">
-            <img src="../static/IMG/imagenespecialista1.jpg" alt="Dr. Alejandro" class="especialista-foto">
+            <img src="{{ url_for('static', filename='IMG/imagenespecialista1.jpg') }}" alt="Dr. Alejandro" class="especialista-foto">
             <div class="especialista-info">
                 <h3>Dr. Alejandro Martínez</h3>
-                <p>Especialista en Ortodoncia con 2 años de experiencia. Graduado de la Universidad Nacional, se enfoca en corregir la posición de los dientes y mejorar la sonrisa. Tiene experiencia con brackets y alineadores, ayudando a sus pacientes a lograr una mordida adecuada y una mejor salud dental.</p>
+                <p>Especialista en Ortodoncia con 2 años de experiencia. Graduado de la Universidad Nacional, se enfoca en corregir la posición de los dientes y mejorar la sonrisa.</p>
             </div>
         </div>
 
         <div class="especialista-item">
-            <img src="../static/IMG/imagenespecialista2.jpg" alt="Dra. Elena" class="especialista-foto">
+            <img src="{{ url_for('static', filename='IMG/imagenespecialista2.jpg') }}" alt="Dra. Elena" class="especialista-foto">
             <div class="especialista-info">
                 <h3>Dra. Elena Rodríguez</h3>
-                <p>Especialista en diseño de sonrisa. Tiene experiencia en el uso de alineadores invisibles y brackets modernos para corregir la posición de los dientes de forma cómoda y discreta. Ayuda a sus pacientes a mejorar su sonrisa y lograr una mejor alineación dental.</p>
+                <p>Especialista en diseño de sonrisa. Tiene experiencia en el uso de alineadores invisibles y brackets modernos para corregir la posición de los dientes.</p>
             </div>
         </div>
 
         <div class="especialista-item">
-            <img src="../static/IMG/imagenespecialista3.jpg" alt="Dr. Ricardo" class="especialista-foto">
+            <img src="{{ url_for('static', filename='IMG/imagenespecialista3.jpg') }}" alt="Dr. Ricardo" class="especialista-foto">
             <div class="especialista-info">
                 <h3>Dr. Ricardo Silva</h3>
-                <p>Especialista en implantes dentales. Se encarga de reemplazar dientes perdidos para mejorar la función y la apariencia de la sonrisa. Tiene un trato amable y divertido, lo que ayuda a que los niños se sientan más tranquilos y pierdan el miedo al dentista.</p>
+                <p>Especialista en implantes dentales. Se encarga de reemplazar dientes perdidos para mejorar la función y la apariencia de la sonrisa.</p>
             </div>
         </div>
     </section>
 
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const nav = document.getElementById("menuPrincipal");
-            const rol = localStorage.getItem("rol");
-            if (rol === "admin") {
-                nav.innerHTML += '<a href="admin.html" class="btn-login">Panel Admin</a>';
-                nav.innerHTML += '<a href="#" onclick="logout()" class="btn-register">Salir</a>';
-            } else if (rol) {
-                nav.innerHTML += '<a href="#" onclick="logout()" class="btn-register">Salir</a>';
-            }
-        });
-
-        function logout() {
-            localStorage.removeItem("rol");
-            window.location.href = "/login";
-        }
-    </script>
-    
-    <script src="../static/js/menu.js"></script>
+    <!-- Botón Flotante Instagram -->
     <a href="https://www.instagram.com/invensibles_software" class="btn-instagram" target="_blank">
         <i class="fab fa-instagram"></i>
     </a>
 
+    <!-- Menú Flotante WhatsApp -->
     <div class="whatsapp-menu-container">
         <div class="whatsapp-list" id="wa-list">
             <div class="wa-header">Contactar con un asesor</div>
@@ -102,9 +84,15 @@
         </button>
     </div>
 
-    <button class="btn-wa-main" onclick="toggleWAMenu()">
-        <i class="fab fa-whatsapp"></i>
-    </button>
-</div>
+    <script src="{{ url_for('static', filename='js/menu.js') }}"></script>
+    <script>
+        function toggleWAMenu() {
+            const list = document.getElementById("wa-list");
+            if (list) {
+                list.classList.toggle("active");
+                list.classList.toggle("show");
+            }
+        }
+    </script>
 </body>
 </html>
