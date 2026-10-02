@@ -22,6 +22,9 @@ from db import conectar, insertar_usuario, verificar_usuario
 
 from db import crear_tabla_servicios, agregar_columna_servicio_id
 
+# Bandera para ejecutar la inicialización solo una vez
+tablas_inicializadas = False
+
 @app.before_request
 def inicializar_bd_una_vez():
     global tablas_inicializadas
@@ -31,7 +34,7 @@ def inicializar_bd_una_vez():
             agregar_columna_servicio_id()
             tablas_inicializadas = True
         except Exception as e:
-            print("Error inicializando BD:", e)
+            print("Error al inicializar la base de datos:", e)
 
 # ------------------------------------------------------------------------------
 # CONFIGURACIÓN E INICIALIZACIÓN
