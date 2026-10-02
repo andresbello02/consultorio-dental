@@ -4,7 +4,7 @@ import os
 
 def conectar():
     host = os.getenv("DB_HOST", "mysql-consultorioodontologico990501.alwaysdata.net")
-    user = os.getenv("DB_USER", "382366_admin")
+    user = os.getenv("DB_USER", "499972")
     password = os.getenv("DB_PASSWORD", "*NIKOL990501")  # <--- Coloca tu contraseña exacta
     database = os.getenv("DB_NAME", "consultorioodontologico990501_db")
 
